@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
-# benchmark_my_max_nested.rb
+# benchmark_my_max.rb
 
 require 'benchmark'
 
-# Рекурсивная версия
+# Recursive version
 def my_max_recursive(array)
   max_val = nil
   i = 0
@@ -16,16 +16,18 @@ def my_max_recursive(array)
   max_val
 end
 
-# Итеративная версия (с собственным стеком)
+# Iterative version (with explicit stack)
 def my_max_iterative(array)
   stack   = [[array, 0]]
   max_val = nil
 
   until stack.empty?
     current, idx = stack.last
+
     if idx < current.length
       el = current[idx]
       stack.last[1] += 1
+
       if el.is_a?(Array)
         stack << [el, 0]
       else
@@ -39,34 +41,26 @@ def my_max_iterative(array)
   max_val
 end
 
-# Генератор «полного» вложенного дерева: width^depth чисел
-def generate_nested(depth, width)
-  return rand(0..1_000_000) if depth.zero?
-  Array.new(width) { generate_nested(depth - 1, width) }
-end
+# Generate large flat array
+DATA_SIZE = 2_000_000
+data = Array.new(DATA_SIZE) { rand(0..1_000_000) }
 
-# Параметры теста
-DEPTH = 6   # глубина рекурсии
-WIDTH = 5   # ширина на каждом уровне
-data = generate_nested(DEPTH, WIDTH)
-
-# Прогрев
+# Warm-up to exclude overhead of first run
 3.times do
   my_max_recursive(data)
   my_max_iterative(data)
 end
 
 runs = 10
-total_leaves = WIDTH**DEPTH
-puts "Benchmarking nested array depth=#{DEPTH}, width=#{WIDTH} (~#{total_leaves} numbers), #{runs} runs each\n\n"
+puts "Benchmarking on flat array of #{DATA_SIZE} elements (#{runs} runs each)\n\n"
 
-# Измеряем рекурсивную версию
+# Measure recursive version
 recursive_bm = Benchmark.measure do
   runs.times { my_max_recursive(data) }
 end
 puts "Recursive: #{recursive_bm.real.round(4)}s"
 
-# Измеряем итеративную версию
+# Measure iterative version
 iterative_bm = Benchmark.measure do
   runs.times { my_max_iterative(data) }
 end

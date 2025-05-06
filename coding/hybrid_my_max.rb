@@ -1,10 +1,10 @@
 #!/usr/bin/env ruby
 # hybrid_my_max.rb
 
-# Порог глубины для использования рекурсии
+# Depth threshold for using recursion
 RECURSION_DEPTH_THRESHOLD = 8000
 
-# Рекурсивная версия поиска максимума
+# Recursive version of finding the maximum value
 def my_max_recursive(array)
   max_val = nil
   i = 0
@@ -17,7 +17,7 @@ def my_max_recursive(array)
   max_val
 end
 
-# Итеративная версия поиска максимума (с явным стеком)
+# Iterative version of finding the maximum value (with explicit stack)
 def my_max_iterative(array)
   stack   = [[array, 0]]
   max_val = nil
@@ -42,8 +42,8 @@ def my_max_iterative(array)
   max_val
 end
 
-# Итеративная проверка глубины вложенности
-# Возвращает максимальную глубину (1 для плоского массива)
+# Iterative depth detection
+# Returns the maximum depth (1 for flat array)
 def detect_depth(array)
   max_depth = 1
   stack = [[array, 1]]
@@ -65,8 +65,8 @@ def detect_depth(array)
   max_depth
 end
 
-# Гибридная обёртка
-# Если вложенность меньше порога — рекурсия, иначе — итерация
+# Hybrid wrapper
+# If nesting is less than threshold - use recursion, otherwise - use iteration
 def my_max(array)
   depth = detect_depth(array)
   if depth < RECURSION_DEPTH_THRESHOLD
@@ -76,14 +76,14 @@ def my_max(array)
   end
 end
 
-# Пример использования
+# Usage example
 sample_flat    = [5, [1, [7, 2], 4], 6, [0, [9]]]
 sample_deep    = [ [ [ [42] ] ] ]
 sample_hybrid1 = Array.new(3) { Array.new(3) { rand(0..100) } }
-# генерируем сильно вложенный массив в один столбец
+# generate a deeply nested array in one column
 sample_hybrid2 = (RECURSION_DEPTH_THRESHOLD + 10).times.reduce(0) { |acc, _| [acc] }
 
-puts "Максимум sample_flat:    #{my_max(sample_flat)}"    # → 9
-puts "Максимум sample_deep:    #{my_max(sample_deep)}"    # → 42
-puts "Максимум sample_hybrid1: #{my_max(sample_hybrid1)}" # обычная глубина → рекурсия
-puts "Максимум sample_hybrid2: #{my_max(sample_hybrid2)}" # глубина > порога → итерация
+puts "Maximum of sample_flat:    #{my_max(sample_flat)}"    # → 9
+puts "Maximum of sample_deep:    #{my_max(sample_deep)}"    # → 42
+puts "Maximum of sample_hybrid1: #{my_max(sample_hybrid1)}" # normal depth → recursion
+puts "Maximum of sample_hybrid2: #{my_max(sample_hybrid2)}" # depth > threshold → iteration

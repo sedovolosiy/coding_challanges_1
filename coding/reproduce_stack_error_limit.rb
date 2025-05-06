@@ -3,7 +3,7 @@
 
 require 'benchmark'
 
-# Рекурсивная версия my_max
+# Recursive version of my_max
 def my_max_recursive(array)
   max_val = nil
   i = 0
@@ -16,27 +16,27 @@ def my_max_recursive(array)
   max_val
 end
 
-# Генератор «глубокого» вложенного массива высоты depth (итерируемо)
+# Generator of "deep" nested array with height = depth (iteratively)
 def generate_deep(depth)
   arr = 0
   depth.times { arr = [arr] }
   arr
 end
 
-# Ищем глубину, при которой падаем
+# Find the depth at which we get a stack overflow
 start_depth = 1_000
 step        = 500
 depth       = start_depth
 
 loop do
-  puts "Пробуем depth = #{depth}..."
+  puts "Trying depth = #{depth}..."
   data = generate_deep(depth)
   begin
     my_max_recursive(data)
-    puts "  OK на depth = #{depth}"
+    puts "  OK at depth = #{depth}"
     depth += step
-  rescue SystemStackError => e
-    puts "  Пойман SystemStackError на depth = #{depth}"
+  rescue SystemStackError
+    puts "  Caught SystemStackError at depth = #{depth}"
     break
   end
 end
